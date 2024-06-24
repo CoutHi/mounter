@@ -39,7 +39,7 @@ int main(int argc,char *argv[]){
 				printf("The above command will be executed, do you confirm? (y/n)\n");
 				scanf("%c",&confirm);
 				clearBuffer();
-				if(confirm == 'y'){
+				if(confirm == 'y' || confirm == 'Y'){
 						system(command);
 						return 0;
 				}else{
@@ -56,7 +56,7 @@ int main(int argc,char *argv[]){
 				printf("The above command will be executed, do you confirm? (y/n)\n");
 				scanf("%c",&confirm);
 				clearBuffer();
-				if(confirm == 'y'){
+				if(confirm == 'y' || confirm == 'Y'){
 						system(command);
 						return 0;
 				}else{
