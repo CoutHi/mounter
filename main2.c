@@ -37,54 +37,57 @@ int main(int argc, char *argv[]) {
     if (argc == 4 && strcmp(argv[1], "1") == 0) {
         device = strdup(argv[2]);
         directory = strdup(argv[3]);
-        snprintf(command, 256, "sudo");
-        char *args[] = {"sudo", "mount", "-o", "uid=your_uid,gid=your_gid", device, directory, NULL};
+        char *args[] = {"sudo", "mount", "-o", NULL, NULL, NULL};
+
+        snprintf(args[3], 256, "uid=%d,gid=%d", getuid(), getgid());
+        args[4] = device;
+        args[5] = directory;
+
         printf("COMMAND: %s %s %s %s %s %s\n", args[0], args[1], args[2], args[3], args[4], args[5]);
         printf("The above command will be executed, do you confirm? (y/n)\n");
+
         scanf(" %c", &confirm);
         clearBuffer();
+
         if (confirm == 'y' || confirm == 'Y') {
             if (execve("/usr/bin/sudo", args, NULL) == -1) {
                 perror("execve");
+                free(device);
+                free(directory);
                 free(command);
                 return 1;
             }
         } else {
             printf("Canceled by user, exiting.\n");
-            free(command);
-            free(device);
-            free(directory);
-            return 0;
         }
     } else if (argc == 6 && strcmp(argv[1], "2") == 0) {
         subvolume = strdup(argv[2]);
-        device = strdup(argv[4]);
-        directory = strdup(argv[5]);
         zstd = (int)strtol(argv[3], NULL, 10);
         if (errno == ERANGE) {
             perror("strtol");
             free(command);
             return 1;
         }
-        snprintf(command, 256, "sudo");
-        char *args[] = {"sudo", "mount", "-o", "subvol=subvolume,noatime,compress=zstd:zstd_level", device, directory, NULL};
-        printf("COMMAND: %s %s %s %s %s %s\n", args[0], args[1], args[2], args[3], args[4], args[5]);
+        device = strdup(argv[4]);
+        directory = strdup(argv[5]);
+        snprintf(command, 256, "sudo mount -o subvol=%s,noatime,compress=zstd:%d %s %s", subvolume, zstd, device, directory);
+        printf("COMMAND: %s\n", command);
         printf("The above command will be executed, do you confirm? (y/n)\n");
+
         scanf(" %c", &confirm);
         clearBuffer();
+
         if (confirm == 'y' || confirm == 'Y') {
-            if (execve("/usr/bin/sudo", args, NULL) == -1) {
-                perror("execve");
+            if (system(command) == -1) {
+                perror("system");
+                free(subvolume);
+                free(device);
+                free(directory);
                 free(command);
                 return 1;
             }
         } else {
             printf("Canceled by user, exiting.\n");
-            free(command);
-            free(subvolume);
-            free(device);
-            free(directory);
-            return 0;
         }
     } else {
         printf("Operation not supported! Exiting.\n");
