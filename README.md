@@ -51,4 +51,8 @@ make clean
 
 ## Notes
 - Ensure you have necessary permissions or use `sudo` to execute the program for mounting.
+<<<<<<< HEAD
+- For btrfs mounting, ensure the specified subvolume and compression level are appropriate for your setup.
+=======
 - Ensure your subvolume name is appropriate
+>>>>>>> 8c47f5b2bb30e7bdab3de3e40ac9f8feef3f384d
