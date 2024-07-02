@@ -13,7 +13,7 @@ To compile the program run:
 ```console
 make
 ```
-This will create 2 executables `mounter` and `mounter2`.
+This will create the executable `mounter`
 
 ## Usage
 ### Command-Line Interface (CLI)
